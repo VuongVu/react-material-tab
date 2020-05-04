@@ -46,7 +46,30 @@ const CloseTabWrapper = () =>
         </div>
     ));
 
-const DraggableTab = SortableElement(({ label, id }) => <Tab label={label} {...a11yProps(id)} component={CloseTabWrapper()} />);
+const DraggableTab = SortableElement(({ label, id }) => (
+    <div style={{ position: 'relative' }}>
+        <Tab label={label} {...a11yProps(id)} />
+        <span
+            onMouseDown={(e) => {
+                e.stopPropagation();
+                console.log('Log for debug');
+            }}
+            style={{
+                position: 'absolute',
+                display: 'inline-block',
+                width: '20px',
+                height: '20px',
+                border: '1px solid red',
+                backgroundColor: 'green',
+                color: '#fff',
+                right: 0,
+                top: '5px',
+                zIndex: 10,
+            }}>
+            Delete
+        </span>
+    </div>
+));
 
 const DraggableTabContainer = SortableContainer(({ value, tabItems }) => (
     <Tabs value={value} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="auto">
