@@ -1,10 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, forwardRef } from 'react';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
@@ -35,16 +37,19 @@ const a11yProps = (index) => {
     };
 };
 
-const DraggableTab = SortableElement(({ label, id }) => <Tab label={label} {...a11yProps(id)} />);
+const CloseTabWrapper = () =>
+    forwardRef((props, ref) => (
+        <div ref={ref}>
+            <IconButton onClick={() => console.log('Delete item ')}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </div>
+    ));
+
+const DraggableTab = SortableElement(({ label, id }) => <Tab label={label} {...a11yProps(id)} component={CloseTabWrapper()} />);
 
 const DraggableTabContainer = SortableContainer(({ value, tabItems }) => (
-    <Tabs
-        value={value}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="scrollable"
-        scrollButtons="auto"
-        aria-label="scrollable auto tabs example">
+    <Tabs value={value} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="auto">
         {tabItems.map((item, index) => (
             <DraggableTab key={index} index={index} label={item.title} id={item.id} />
         ))}
@@ -87,7 +92,11 @@ class App extends PureComponent {
         const { tabActiveIndex, tabContents } = this.state;
         const activeTab = tabContents.find((item) => item.id === tabActiveIndex);
 
-        return <TabPanel value={tabActiveIndex}>{activeTab.title}</TabPanel>;
+        return (
+            <TabPanel value={tabActiveIndex} index={tabActiveIndex}>
+                {activeTab.title}
+            </TabPanel>
+        );
     };
 
     render() {
